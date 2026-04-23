@@ -60,6 +60,18 @@ async def root():
     return {"message": "ModelScope Router API", "endpoints": ["/v1/chat/completions"]}
 
 
+@app.get("/health")
+async def health():
+    stats = stats_service.get_snapshot()
+    models = stats_service.get_available_models()
+    return {
+        "status": "ok",
+        "available_models": len(models),
+        "stats": stats["stats"],
+        "limits": stats["limits"],
+    }
+
+
 @app.post("/v1/chat/completions")
 async def chat_completions(request: Request):
     try:
