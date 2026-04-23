@@ -1,12 +1,10 @@
 {
+  "version": 2,
   "builds": [
     {
       "src": "api/index.py",
       "use": "@vercel/python",
-      "config": { 
-        "runtime": "python3.11",
-        "installCommand": "pip install --break-system-packages -r requirements.txt"
-      }
+      "config": { "runtime": "python3.11" }
     }
   ],
   "routes": [
