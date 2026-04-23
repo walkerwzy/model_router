@@ -1,8 +1,9 @@
 {
-  "$schema": "https://openapi.vercel.sh/vercel.json",
-  "buildCommand": "mkdir -p public && pip install --break-system-packages -r requirements.txt",
-  "framework": null,
-  "outputDirectory": "public",
+  "functions": {
+    "api/index.py": {
+      "runtime": "python3.11"
+    }
+  },
   "routes": [
     {
       "src": "/(.*)",
