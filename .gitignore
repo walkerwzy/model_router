@@ -147,3 +147,4 @@ Thumbs.db
 # Project specific
 refactored_router/router_data/model_stats.json
 *.log
+.ruff_cache/

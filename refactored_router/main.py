@@ -55,6 +55,11 @@ app.add_middleware(
 )
 
 
+@app.get("/")
+async def root():
+    return {"message": "ModelScope Router API", "endpoints": ["/v1/chat/completions"]}
+
+
 @app.post("/v1/chat/completions")
 async def chat_completions(request: Request):
     try:
