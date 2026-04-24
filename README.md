@@ -1,12 +1,6 @@
-Inspired by [https://github.com/RuleViz/ModelScopeApiRouter](https://github.com/RuleViz/ModelScopeApiRouter)
+Inspired by [https://github.com/RuleViz/ModelScopeApiRouter](https://github.com/RuleViz/ModelScopeApiRouter)，增加了模型级别，负载均衡，熔断，主动检测等特性，增加vercel部署兼容。
 
 # ModelScope 智能模型路由器 (ModelScope Smart Router)
-
-<div align="center">
-
-<img src="./logo.jpg" width="200" alt="ModelScope Router Logo">
-
-<br>
 
 ![Python](https://img.shields.io/badge/Python-3.8%2B-blue)
 ![FastAPI](https://img.shields.io/badge/FastAPI-0.95%2B-green)
@@ -178,11 +172,6 @@ for chunk in response:
 
 - **本地**: 终端 Rich UI 实时显示模型状态、日志
 - **Vercel**: 访问 `/health` 端点查看 JSON 状态
-
-## 🤝 贡献与支持
-
-欢迎提交 Issue 和 Pull Request！
-如果您觉得这个项目有帮助，请给一个 ⭐️ Star！
 
 ## 📄 许可证
 
