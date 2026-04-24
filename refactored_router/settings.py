@@ -24,6 +24,7 @@ class Settings:
         self.BASE_URL = (
             os.getenv("MS_BASE_URL") or "https://api-inference.modelscope.cn/v1"
         )
+        self.TOKEN = os.getenv("TOKEN", "")
         self.PORT = int(os.getenv("PORT", "2166"))
         self.ROUTER_ALIAS = "modelscope-router"
 

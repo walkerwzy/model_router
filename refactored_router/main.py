@@ -74,6 +74,10 @@ async def health():
 
 @app.post("/v1/chat/completions")
 async def chat_completions(request: Request):
+    auth_header = request.headers.get("Authorization", "")
+    if config.TOKEN and auth_header != f"Bearer {config.TOKEN}":
+        raise HTTPException(status_code=401, detail="Invalid or missing token")
+
     try:
         body = await request.json()
         req_model = body.get("model")
