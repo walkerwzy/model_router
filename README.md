@@ -10,6 +10,7 @@ Inspired by [https://github.com/RuleViz/ModelScopeApiRouter](https://github.com/
 
 ![Python](https://img.shields.io/badge/Python-3.8%2B-blue)
 ![FastAPI](https://img.shields.io/badge/FastAPI-0.95%2B-green)
+![Vercel](https://img.shields.io/badge/Vercel-Ready-black)
 ![License](https://img.shields.io/badge/license-MIT-blue)
 
 **用于 ModelScope 服务的企业级负载均衡与高可用路由网关**
@@ -151,22 +152,26 @@ for chunk in response:
 
 ```
 .
-├── requirements.txt         # Python 依赖列表
 ├── README.md                # 说明文档
 ├── vercel.json              # Vercel 配置
-├── logo.jpg                 # 项目 Logo
+├── requirements.txt         # Python 依赖
 ├── test_api.sh              # API 测试脚本
+├── logo.jpg                 # 项目 Logo
+├── roo-code-example.png     # UI 截图
+├── .gitignore               # Git 忽略配置
 ├── api/                     # Vercel Serverless 函数
+│   ├── __init__.py
 │   └── index.py             # 入口文件
 └── refactored_router/       # 核心代码包
-    ├── main.py              # 程序入口
+    ├── __init__.py
+    ├── main.py              # FastAPI 应用
     ├── settings.py          # 配置加载
     ├── network.py           # 网络请求
-    ├── stats.py             # 统计与熔断服务
+    ├── stats.py             # 统计与熔断
     ├── schema.py            # 数据模型
     ├── ui.py                # 终端 UI
     ├── config.json          # 模型配置
-    └── .env                 # 环境变量
+    └── router_data/         # 数据存储目录
 ```
 
 ## 🖥️ 监控
