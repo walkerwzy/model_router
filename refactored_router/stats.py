@@ -140,3 +140,6 @@ class StatsService:
 
     def get_snapshot(self) -> Dict:
         return {"stats": self.stats, "limits": self.model_limits}
+
+
+stats_service = StatsService()
