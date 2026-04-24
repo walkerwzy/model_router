@@ -1,7 +1,8 @@
 [
-  {"level": 1, "name": "deepseek-v3-2", "model_id": "deepseek-ai/DeepSeek-V3.2", "estimated_limit": 50},
+  {"level": 3, "name": "deepseek-v3-2", "model_id": "deepseek-ai/DeepSeek-V3.2", "estimated_limit": 50},
   {"level": 2, "name": "deepseek-v3-2-exp", "model_id": "deepseek-ai/DeepSeek-V3.2-Exp", "estimated_limit": 50},
-  {"level": 3, "name": "deepseek-v3-1", "model_id": "deepseek-ai/DeepSeek-V3.1", "estimated_limit": 50},
+  {"level": 1, "name": "deepseek-v4-pro", "model_id": "deepseek-ai/DeepSeek-V4-Pro", "estimated_limit": 50},
+  {"level": 1, "name": "deepseek-v4-flash", "model_id": "deepseek-ai/DeepSeek-V4-Flash", "estimated_limit": 50},
   {"level": 2, "name": "deepseek-r1-0528", "model_id": "deepseek-ai/DeepSeek-R1-0528", "estimated_limit": 50},
   {"level": 3, "name": "glm-4-6v", "model_id": "ZhipuAI/GLM-4.6V", "estimated_limit": 50},
   {"level": 3, "name": "glm-4-5", "model_id": "ZhipuAI/GLM-4.5", "estimated_limit": 50},
