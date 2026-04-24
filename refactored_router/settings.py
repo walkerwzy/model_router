@@ -21,8 +21,8 @@ class Settings:
 
         self._load_env()
         self.API_KEY = os.getenv("MS_API_KEY", "")
-        self.BASE_URL = os.getenv(
-            "MS_BASE_URL", "https://api-inference.modelscope.cn/v1"
+        self.BASE_URL = (
+            os.getenv("MS_BASE_URL") or "https://api-inference.modelscope.cn/v1"
         )
         self.PORT = int(os.getenv("PORT", "2166"))
         self.ROUTER_ALIAS = "modelscope-router"
