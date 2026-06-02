@@ -75,6 +75,7 @@ async def list_models(request: Request):
                 "object": "model",
                 "created": now,
                 "owned_by": "modelscope-router",
+                "name": config.ROUTER_ALIAS,
             }
         ],
     }
