@@ -57,7 +57,27 @@ app.add_middleware(
 
 @app.get("/")
 async def root():
-    return {"message": "ModelScope Router API", "endpoints": ["/v1/chat/completions"]}
+    return {"message": "ModelScope Router API", "endpoints": ["/v1/chat/completions", "/v1/models"]}
+
+
+@app.get("/v1/models")
+async def list_models(request: Request):
+    auth_header = request.headers.get("Authorization", "")
+    if config.TOKEN and auth_header != f"Bearer {config.TOKEN}":
+        raise HTTPException(status_code=401, detail="Invalid or missing token")
+
+    now = int(time.time())
+    return {
+        "object": "list",
+        "data": [
+            {
+                "id": config.ROUTER_ALIAS,
+                "object": "model",
+                "created": now,
+                "owned_by": "modelscope-router",
+            }
+        ],
+    }
 
 
 @app.get("/health")
