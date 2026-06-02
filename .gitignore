@@ -148,3 +148,6 @@ Thumbs.db
 refactored_router/router_data/model_stats.json
 *.log
 .ruff_cache/
+
+.workbuddy/
+.sisyphus/

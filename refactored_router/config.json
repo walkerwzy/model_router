@@ -4,6 +4,9 @@
   {"level": 1, "name": "deepseek-v4-pro", "model_id": "deepseek-ai/DeepSeek-V4-Pro", "estimated_limit": 50},
   {"level": 1, "name": "deepseek-v4-flash", "model_id": "deepseek-ai/DeepSeek-V4-Flash", "estimated_limit": 50},
   {"level": 2, "name": "deepseek-r1-0528", "model_id": "deepseek-ai/DeepSeek-R1-0528", "estimated_limit": 50},
+  {"level": 1, "name": "GLM-5.1", "model_id": "ZhipuAI/GLM-5.1", "estimated_limit": 50},
+  {"level": 2, "name": "GLM-5", "model_id": "ZhipuAI/GLM-5", "estimated_limit": 50},
+  {"level": 2, "name": "GLM-4.7-Flash", "model_id": "ZhipuAI/GLM-4.7-Flash", "estimated_limit": 50},
   {"level": 3, "name": "glm-4-6v", "model_id": "ZhipuAI/GLM-4.6V", "estimated_limit": 50},
   {"level": 3, "name": "glm-4-5", "model_id": "ZhipuAI/GLM-4.5", "estimated_limit": 50},
   {"level": 3, "name": "qwen3-235b-a22b-instruct", "model_id": "Qwen/Qwen3-235B-A22B-Instruct-2507", "estimated_limit": 30},
@@ -22,8 +25,6 @@
   {"level": 1, "name": "MiniMax-M2.7", "model_id": "MiniMax/MiniMax-M2.7", "estimated_limit": 50},
   {"level": 2, "name": "MiniMax-M2.5", "model_id": "MiniMax/MiniMax-M2.5", "estimated_limit": 50},
   {"level": 2, "name": "Kimi-K2.5", "model_id": "moonshotai/Kimi-K2.5", "estimated_limit": 50},
-  {"level": 1, "name": "GLM-5.1", "model_id": "ZhipuAI/GLM-5.1", "estimated_limit": 50},
-  {"level": 2, "name": "GLM-5", "model_id": "ZhipuAI/GLM-5", "estimated_limit": 50},
-  {"level": 2, "name": "GLM-4.7-Flash", "model_id": "ZhipuAI/GLM-4.7-Flash", "estimated_limit": 50},
+  {"level": 2, "name": "Kimi-K2.6", "model_id": "moonshotai/Kimi-K2.6:DashScope", "estimated_limit": 50},
   {"level": 1, "name": "MiMo-V2-Flash:xiaomi", "model_id": "XiaomiMiMo/MiMo-V2-Flash:xiaomi", "estimated_limit": 50}
 ]
