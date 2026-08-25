@@ -6,7 +6,7 @@
   {"level": 1, "name": "Qwen3.8-27B", "model_id": "Qwen/Qwen3.8-27B", "estimated_limit": 500},
   {"level": 1, "name": "Qwen3.5-27B", "model_id": "Qwen/Qwen3.5-27B", "estimated_limit": 500},
   {"level": 2, "name": "Kimi-K3", "model_id": "moonshotai/Kimi-K3", "estimated_limit": 500},
-  {"level": 1, "name": "MiMo-V2-Flash:xiaomi", "model_id": "XiaomiMiMo/MiMo-V2-Flash:xiaomi", "estimated_limit": 500}
+  {"level": 1, "name": "MiMo-V2-Flash:xiaomi", "model_id": "XiaomiMiMo/MiMo-V2-Flash:xiaomi", "estimated_limit": 500},
   {"level": 1, "name": "Hy3", "model_id": "Tencent-Hunyuan/Hy3", "estimated_limit": 500},
   {"level": 1, "name": "Ling-3.0-flash", "model_id": "inclusionAI/Ling-3.0-flash", "estimated_limit": 500},
   {"level": 1, "name": "MiniMax-M3", "model_id": "MiniMax/MiniMax-M3", "estimated_limit": 500}
