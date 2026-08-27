@@ -145,7 +145,7 @@ ehthumbs.db
 Thumbs.db
 
 # Project specific
-refactored_router/router_data/model_stats.json
+refactored_router/router_data/
 *.log
 .ruff_cache/
 

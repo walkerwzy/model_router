@@ -1,35 +1,37 @@
 Inspired by [https://github.com/RuleViz/ModelScopeApiRouter](https://github.com/RuleViz/ModelScopeApiRouter)，增加了模型级别，负载均衡，熔断，主动检测等特性，增加vercel部署兼容。
+2026-08 升级：由单提供商切换为**多提供商路由**（每条配置自带 `base_url` / `model_id` / API key），按配额批量轮换，用于聚合多家大模型公开服务的免费额度；原单提供商路由原样保留在 `/old` 前缀下。
 
-# ModelScope 智能模型路由器 (ModelScope Smart Router)
+# 多提供商智能路由器 (Multi-Provider Smart Router)
 
 ![Python](https://img.shields.io/badge/Python-3.8%2B-blue)
 ![FastAPI](https://img.shields.io/badge/FastAPI-0.95%2B-green)
 ![Vercel](https://img.shields.io/badge/Vercel-Ready-black)
 ![License](https://img.shields.io/badge/license-MIT-blue)
 
-**用于 ModelScope 服务的企业级负载均衡与高可用路由网关**
-
-</div>
+**聚合多家大模型免费额度的 OpenAI 兼容路由网关**
 
 ---
 
 ## 📖 项目简介
 
-ModelScope Smart Router 是一个基于 FastAPI 构建的高性能 AI 模型网关。它就像一个智能交通指挥官，旨在解决**单点故障**和**API调用限流**问题。通过智能路由算法，它能自动管理多个 ModelScope 模型实例，实现负载均衡、故障转移（Failover）和精细化的限流控制，确保您的 AI 应用始终保持高可用性。
+Multi-Provider Smart Router 是一个基于 FastAPI 构建的 AI 模型网关。它把多个提供商的免费额度"拼"成一个池子：每条提供商配置（`base_url` + `model_id` + API key）按配额批量轮换，配合故障转移、限流冷却和熔断，让你用统一的 OpenAI 兼容接口白嫖多家服务，同时避免单点故障和限流。
 
-无论您是个人开发者还是企业用户，都可以通过本系统统一管理 API 访问，提升服务的稳定性和成功率。完全兼容 OpenAI API 格式，可直接接入现有的 AI 工具链（如 Cursor, NextChat, LangChain 等）。
+老的单提供商路由（ModelScope 全局 key + level 优先级）完整保留在 `/old` 前缀下，行为与升级前一致。
+
+完全兼容 OpenAI API 格式，可直接接入现有的 AI 工具链（如 Cursor, NextChat, LangChain 等）。
 
 ## ✨ 核心功能
 
-- **🤖 智能路由策略**: 按 level 优先级选模型（level 1 > 2 > 3），同 level 内负载均衡
-- **⚖️ 负载均衡**: 基于调用次数的负载均衡，防止单一模型过载
-- **🛡️ 自动故障转移**: 当某个模型调用失败或超时，自动无缝切换到备用模型
-- **🚦 熔断器**: 连续 3 次失败自动熔断 30 秒，避免反复尝试已挂的模型
-- **🔍 健康探测**: 启动时自动探测所有模型可用性，实时更新状态
-- **🔐 Token 认证**: 支持 Bearer Token 认证，保护 API 访问安全
-- **📊 健康端点**: 提供 `/health` 接口查看模型状态和统计信息
-- **🔌 OpenAI 兼容**: 提供与 OpenAI `v1/chat/completions` 完全兼容的接口
-- **🌊 流式响应支持**: 完美支持 Server-Sent Events (SSE) 流式输出
+- **🔄 多提供商批量轮换**: 每条配置连续成功服务 5 次（可配）后切换到下一条，公平分摊各家额度
+- **🛡️ 自动故障转移**: 当前配置调用失败自动试下一家；失败不消耗轮换配额
+- **⏳ 限流冷却**: 某配置被 429 限流后冷却 300 秒（可配）自动恢复，不再一封封一天
+- **🚦 熔断器**: 连续 3 次失败自动熔断 30 秒（新路由为修正版实现，见下方说明）
+- **🔍 健康探测开关**: 启动探测默认本地开、Vercel 关（冷启动探测会消耗免费额度，可用 `HEALTH_PROBE` 覆盖）
+- **🕰️ 老路由保留**: `/old/*` 端点原样保留单提供商 + level 路由的旧行为
+- **🔐 Token 认证**: 新老路由统一支持 Bearer Token 认证
+- **📊 健康端点**: `/health` 查看轮换状态与各提供商统计，`/old/health` 查看老路由状态
+- **🔌 OpenAI 兼容**: 与 OpenAI `v1/chat/completions` 完全兼容
+- **🌊 流式响应支持**: 完美支持 Server-Sent Events (SSE) 流式输出，流正常结束才计成功
 
 ## 🚀 快速启动
 
@@ -47,8 +49,8 @@ python -m refactored_router.main
 1. 将代码推送到 GitHub
 2. 在 Vercel 中导入项目
 3. 配置环境变量：
-   - `MS_API_KEY` - ModelScope API Key
-   - `MS_BASE_URL` - 模型服务 URL（可选，默认 `https://api-inference.modelscope.cn/v1`）
+   - `MS_API_KEY` - 第 1 个 ModelScope API Key（老路由也用它）
+   - `MS_API_KEY_2` - 第 2 个 ModelScope API Key（按 providers.json 引用添加，可继续加 `MS_API_KEY_3` 等）
    - `TOKEN` - 访问 Token（可选，用于保护 API）
 4. 部署完成
 
@@ -58,12 +60,37 @@ python -m refactored_router.main
 
 | 变量名 | 说明 | 默认值 | 必填 |
 |--------|------|--------|------|
-| `MS_API_KEY` | ModelScope 平台的 API Key | 无 | ✅ 是 |
-| `MS_BASE_URL` | 模型服务基础 URL | `https://api-inference.modelscope.cn/v1` | ❌ 否 |
-| `TOKEN` | API 访问 Token | 无 | ❌ 否 |
+| `MS_API_KEY` | 老路由（/old）使用的 ModelScope API Key，也是示例提供商配置的 key | 无 | ✅ 是 |
+| `MS_BASE_URL` | 老路由的模型服务 URL | `https://api-inference.modelscope.cn/v1` | ❌ 否 |
+| `TOKEN` | API 访问 Token（新老路由共用） | 无 | ❌ 否 |
 | `PORT` | 服务监听端口（本地） | `2166` | ❌ 否 |
+| `ROTATION_QUOTA` | 每条配置轮换前连续服务的次数 | `5` | ❌ 否 |
+| `LIMITED_COOLDOWN` | 限流(429)后多少秒恢复可用 | `300` | ❌ 否 |
+| `HEALTH_PROBE` | 启动探测开关（`1/0`），缺省本地开、Vercel 关 | 见左 | ❌ 否 |
+| `ROUTER_ALIAS` | `/v1/models` 返回的模型别名 | `modelscope-router` | ❌ 否 |
 
-### 模型配置 (config.json)
+### 提供商配置 (providers.json) — 新路由
+
+每条是一个完整的提供商三元组，轮换、熔断、限流、统计都按 `name` 记账：
+
+```json
+[
+  {"name": "MS-DSV4Pro-K1", "base_url": "https://api-inference.modelscope.cn/v1", "model_id": "deepseek-ai/DeepSeek-V4-Pro-0813", "api_key_env": "MS_API_KEY", "quota": 5},
+  {"name": "MS-DSV4Pro-K2", "base_url": "https://api-inference.modelscope.cn/v1", "model_id": "deepseek-ai/DeepSeek-V4-Pro-0813", "api_key_env": "MS_API_KEY_2", "quota": 5}
+]
+```
+
+- **name**: 内部标识，**必须唯一**（重名的配置会被跳过并告警；同一模型挂多个 key 时用不同名字区分，如 `-K1`/`-K2`）
+- **base_url**: 该提供商自己的服务地址（以 `/v1` 结尾）
+- **model_id**: 转发时替换进请求体的真实模型 ID
+- **api_key_env**: 存放 API key 的**环境变量名**（key 本身放 `.env` / Vercel 环境变量，不进仓库）；变量未设置时该配置自动标记不可用，不影响其他配置
+- **quota**: 该配置每轮连续服务多少次，缺省取 `ROTATION_QUOTA`
+
+接入新提供商只需加一行，并在环境变量里补上对应 key。
+
+### 模型配置 (config.json) — 老路由 (/old)
+
+老路由专用，格式不变：
 
 ```json
 [
@@ -72,12 +99,6 @@ python -m refactored_router.main
     "name": "deepseek-v3-2",
     "model_id": "deepseek-ai/DeepSeek-V3.2",
     "estimated_limit": 50
-  },
-  {
-    "level": 2,
-    "name": "deepseek-v3-1",
-    "model_id": "deepseek-ai/DeepSeek-V3.1",
-    "estimated_limit": 50
   }
 ]
 ```
@@ -85,7 +106,17 @@ python -m refactored_router.main
 - **level**: 优先级，数字越小越优先使用
 - **name**: 内部标识名称（需唯一）
 - **model_id**: ModelScope 上的真实模型 ID
-- **estimated_limit**: 每日预估调用次数限制
+- **estimated_limit**: 每日预估调用次数限制（仅用于展示）
+
+## 🛤️ 轮换语义（新路由）
+
+- 游标指向"当前值日"的配置，它连续**成功**服务满 `quota` 次后，游标切到下一条配置，循环往复
+- 当前配置调用失败：本次请求自动故障转移到下一条可用配置；失败不消耗配额，游标不动
+- 当前配置被限流或熔断：游标让位给下一条可用配置，开启新一轮
+- 429 限流：标记后冷却 `LIMITED_COOLDOWN` 秒自动恢复
+- 熔断：连续 3 次失败熔断 30 秒（注意：老实现因 `open_time=0` 时判断恒真，熔断从未真正生效；为保持 `/old` 行为等价不做修改，仅新路由用修正版）
+- 请求体里直接写某条配置的 `model_id`（而非别名）可固定从该配置开始尝试
+- 轮换状态持久化在 `DATA_DIR`（Vercel 上是 `/tmp`）；serverless 多实例各自计数，属于**近似轮换**，按设计接受
 
 ## 💻 使用指南
 
@@ -94,8 +125,13 @@ python -m refactored_router.main
 | 端点 | 说明 |
 |------|------|
 | `/` | 根路径，返回 API 信息 |
-| `/health` | 健康检查，返回模型状态统计 |
-| `/v1/chat/completions` | 聊天接口（OpenAI 兼容） |
+| `/health` | 健康检查：轮换状态 + 各提供商统计 |
+| `/v1/chat/completions` | 聊天接口（OpenAI 兼容，走多提供商轮换） |
+| `/v1/models` | 模型列表（返回路由别名） |
+| `/old/` | 老路由根路径 |
+| `/old/health` | 老路由健康检查 |
+| `/old/v1/chat/completions` | 老路由聊天接口（单提供商 + level 路由） |
+| `/old/v1/models` | 老路由模型列表 |
 
 ### 调用示例
 
@@ -118,6 +154,15 @@ curl -N https://your-vercel-app.vercel.app/v1/chat/completions \
     "model": "modelscope-router",
     "messages": [{"role": "user", "content": "用一句话介绍你自己"}],
     "stream": true
+  }'
+
+# 老路由（升级前的行为）
+curl https://your-vercel-app.vercel.app/old/v1/chat/completions \
+  -H "Authorization: Bearer your-token" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "model": "modelscope-router",
+    "messages": [{"role": "user", "content": "你好"}]
   }'
 ```
 
@@ -158,20 +203,24 @@ for chunk in response:
 │   └── index.py             # 入口文件
 └── refactored_router/       # 核心代码包
     ├── __init__.py
-    ├── main.py              # FastAPI 应用
-    ├── settings.py          # 配置加载
-    ├── network.py           # 网络请求
-    ├── stats.py             # 统计与熔断
+    ├── main.py              # FastAPI 应用（新路由 + 挂载 /old）
+    ├── settings.py          # 配置加载（含 providers 校验）
+    ├── providers.json       # 多提供商配置
+    ├── rotation.py          # 批量轮换服务（游标 + 配额）
+    ├── provider_api.py      # 多提供商网络层
+    ├── stats.py             # 统计与熔断（新老各一份）
+    ├── legacy.py            # 老路由（原样冻结，挂 /old）
+    ├── network.py           # 老路由网络层
     ├── schema.py            # 数据模型
-    ├── ui.py                # 终端 UI
-    ├── config.json          # 模型配置
-    └── router_data/         # 数据存储目录
+    ├── ui.py                # 终端 UI（新老双区显示）
+    ├── config.json          # 老路由模型配置
+    └── router_data/         # 运行时数据（统计/轮换状态，不入 git）
 ```
 
 ## 🖥️ 监控
 
-- **本地**: 终端 Rich UI 实时显示模型状态、日志
-- **Vercel**: 访问 `/health` 端点查看 JSON 状态
+- **本地**: 终端 Rich UI 实时显示新路由提供商（含轮换进度）与老路由模型两组状态
+- **Vercel**: 访问 `/health` 查看轮换状态与各提供商统计（`/old/health` 为老路由）
 
 ## 📄 许可证
 

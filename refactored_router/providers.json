@@ -1,0 +1,4 @@
+[
+  {"name": "MS-DSV4Pro-K1", "base_url": "https://api-inference.modelscope.cn/v1", "model_id": "deepseek-ai/DeepSeek-V4-Pro-0813", "api_key_env": "MS_API_KEY", "quota": 5},
+  {"name": "MS-DSV4Pro-K2", "base_url": "https://api-inference.modelscope.cn/v1", "model_id": "deepseek-ai/DeepSeek-V4-Pro-0813", "api_key_env": "MS_API_KEY_2", "quota": 5}
+]
