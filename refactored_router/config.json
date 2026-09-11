@@ -1,6 +1,6 @@
 [
+  {"level": 1, "name": "deepseek-ai/DeepSeek-V4.1-Flash", "model_id": "deepseek-ai/DeepSeek-V4.1-Flash", "estimated_limit": 500},
   {"level": 1, "name": "deepseek-v4-pro-0813", "model_id": "deepseek-ai/DeepSeek-V4-Pro-0813", "estimated_limit": 500},
-  {"level": 1, "name": "deepseek-v4-flash-0731", "model_id": "deepseek-ai/DeepSeek-V4-Flash-0731", "estimated_limit": 500},
   {"level": 2, "name": "GLM-5.2", "model_id": "ZhipuAI/GLM-5.2", "estimated_limit": 500},
   {"level": 2, "name": "GLM-5.1", "model_id": "ZhipuAI/GLM-5.1", "estimated_limit": 500},
   {"level": 1, "name": "Qwen3.8-27B", "model_id": "Qwen/Qwen3.8-27B", "estimated_limit": 500},
